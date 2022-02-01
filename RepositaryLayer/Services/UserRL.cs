@@ -13,10 +13,10 @@ using System.Text;
 
 namespace RepositaryLayer.Services
 {
-    public class UserRL : IUserRL
+    public class UserRL: IUserRL
     {
         private readonly Context context;
-		private readonly IConfiguration Iconfiguration;
+        private readonly IConfiguration Iconfiguration;
         public UserRL(Context context, IConfiguration Iconfiguration)
         {
             this.context = context;
@@ -33,12 +33,11 @@ namespace RepositaryLayer.Services
                 users.Password = user.Password;
                 this.context.Users.Add(users);
                 int result = this.context.SaveChanges();
-                if(result>0)
+                if (result > 0)
                 {
                     return true;
                 }
                 return false;
-
             }
             catch (Exception)
             {
