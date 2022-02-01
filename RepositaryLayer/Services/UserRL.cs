@@ -17,12 +17,12 @@ namespace RepositaryLayer.Services
     {
         private readonly Context context;
 		private readonly IConfiguration Iconfiguration;
-        public UserRL(Context context,IConfiguration Iconfiguration)
+        public UserRL(Context context, IConfiguration Iconfiguration)
         {
-			this.context = context;
-			this.Iconfiguration = Iconfiguration;
+            this.context = context;
+            this.Iconfiguration = Iconfiguration;
         }
-		public bool Registration(UserRegistration user)
+        public bool Registration(UserRegistration user)
         {
             try
             {
