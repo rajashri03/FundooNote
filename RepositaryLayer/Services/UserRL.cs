@@ -13,9 +13,9 @@ using System.Text;
 
 namespace RepositaryLayer.Services
 {
-	public class UserRL : IUserRL
+    public class UserRL : IUserRL
     {
-		private readonly Context context;
+        private readonly Context context;
 		private readonly IConfiguration Iconfiguration;
         public UserRL(Context context,IConfiguration Iconfiguration)
         {
@@ -76,7 +76,6 @@ namespace RepositaryLayer.Services
                     Subject = new ClaimsIdentity(new Claim[]
                     {
                         new Claim(ClaimTypes.Email, Emailid),
-                        //new Claim("UserId", userId.ToString())
                     }),
                     Expires = DateTime.UtcNow.AddMinutes(15),
                     SigningCredentials = new SigningCredentials(loginTokenKey, SecurityAlgorithms.HmacSha256Signature)
