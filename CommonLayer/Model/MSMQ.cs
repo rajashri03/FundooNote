@@ -33,7 +33,7 @@ namespace CommonLayer.Model
                 var message = msg.EndReceive(e.AsyncResult);
                 string token = message.Body.ToString();
                 string Subject = "Forget Password Token";
-                string Body = token;
+                string Body = $"Forget Your Password?\nTo Reset Your password copy this token and paste it\n\n"+token;
                 string jwt= jwtToken(token);
                 var smtpClient = new SmtpClient("smtp.gmail.com")
                 {
