@@ -41,48 +41,51 @@ namespace Fundoo
 			services.AddTransient<IUserBL, UserBL>();
             services.AddTransient<INoteBL, NoteBL>();
             services.AddTransient<INoteRL, NoteRL>();
+            services.AddTransient<ICollabBL, CollabBL>();
+            services.AddTransient<ICollabRL, CollabRL>();
             services.AddSwaggerGen(c =>
             {
-                var jwtSecurityScheme = new OpenApiSecurityScheme
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Welcome to FundooNotes" });
+
+
+                var securitySchema = new OpenApiSecurityScheme
                 {
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    Name = "JWT Authentication",
+                    Description = "Using the Authorization header with the Bearer scheme.",
+                    Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
-                    Description = "enter JWT Bearer token on textbox below!",
+                    Scheme = "bearer",
                     Reference = new OpenApiReference
                     {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
                     }
                 };
-                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+                c.AddSecurityDefinition("Bearer", securitySchema);
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                 { jwtSecurityScheme, Array.Empty<string>() }
-                });
+              { securitySchema, new[] { "Bearer" } }
+          });
+
             });
+            //var jwtSection = Configuration.GetSection("Jwt:Key");
 
-            var tokenKey = Configuration.GetValue<string>("Jwt:key");
-            var key = Encoding.ASCII.GetBytes(tokenKey);
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
-            services.AddAuthentication(x =>
+            }).AddJwtBearer(options =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    ValidateLifetime = false,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])) //Configuration["JwtToken:SecretKey"]
                 };
             });
         }

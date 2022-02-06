@@ -207,5 +207,24 @@ namespace RepositaryLayer.Services
                 throw;
             }
         }
+        public bool Color(long noteid,string color)
+        {
+            try
+            {
+                NoteEntity note = this.context.Notes.FirstOrDefault(x => x.NoteID == noteid);
+                if (note.Color != null)
+                {
+                    note.Color = color;
+                    this.context.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

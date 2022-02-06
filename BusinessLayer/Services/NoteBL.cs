@@ -124,5 +124,17 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
+        public bool Color(long noteid, string color)
+        {
+            try
+            {
+                return this.noterl.Color(noteid, color);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

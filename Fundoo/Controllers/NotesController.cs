@@ -161,6 +161,26 @@ namespace Fundoo.Controllers
                 throw;
             }
         }
+        [HttpPut]
+        public IActionResult Color(long noteid, string color)
+        {
+            try
+            {
+                if (noteBL.Color(noteid, color))
+                {
+                    return this.Ok(new { message = "Color is changed " });
+                }
+                else
+                {
+                    return this.BadRequest(new { message = "Unable to change color" });
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         [HttpGet]
         public IEnumerable<NoteEntity> GetAllNotesbyuser(long userid)
         {

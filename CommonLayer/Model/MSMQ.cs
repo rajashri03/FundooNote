@@ -20,7 +20,7 @@ namespace CommonLayer.Model
                 MessageQueue.Create(msg.Path);
             }
             msg.Formatter = new XmlMessageFormatter(new Type[] { typeof(string) });//for asyn communication
-            msg.ReceiveCompleted += Msg_ReceiveCompleted;//delegates
+            msg.ReceiveCompleted += Msg_ReceiveCompleted;//delegates,press tab here
             msg.Send(token);
             msg.BeginReceive();
             msg.Close();

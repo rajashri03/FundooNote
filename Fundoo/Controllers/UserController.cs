@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using BusinessLayer.Interfaces;
 using CommonLayer.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RepositaryLayer.Entities;
 
 namespace Fundoo.Controllers
 {
@@ -84,10 +86,11 @@ namespace Fundoo.Controllers
         }
         [Authorize]
         [HttpPost]
-        public IActionResult ResetPassword(string email,string password, string confirmPassword)
+        public IActionResult ResetPassword(string password, string confirmPassword)
         {
             try
             {
+                var email = User.Claims.First(e => e.Type == "Email").Value;
                 if (userBL.ResetPassword(email, password, confirmPassword))
                 {
                     return this.Ok(new { Success = true, message = "Your password has been changed sucessfully" });

@@ -19,5 +19,6 @@ namespace RepositaryLayer.Interfaces
         public bool IsArchiveORNot(long noteid);
         public bool IstrashORNot(long noteid);
         public bool UploadImage(long noteid, IFormFile img);
+        public bool Color(long noteid, string color);
     }
 }

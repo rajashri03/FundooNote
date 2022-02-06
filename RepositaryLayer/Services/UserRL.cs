@@ -64,29 +64,42 @@ namespace RepositaryLayer.Services
                 throw;
             }
         }
-        public string GenerateJWTToken(string Emailid)
-        {
-            try
-            {
-                var loginTokenHandler = new JwtSecurityTokenHandler();
-                var loginTokenKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.Iconfiguration[("Jwt:key")]));
-                var loginTokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                        new Claim(ClaimTypes.Email, Emailid),
-                    }),
-                    Expires = DateTime.UtcNow.AddMinutes(15),
-                    SigningCredentials = new SigningCredentials(loginTokenKey, SecurityAlgorithms.HmacSha256Signature)
-                };
-                var token = loginTokenHandler.CreateToken(loginTokenDescriptor);
-                return loginTokenHandler.WriteToken(token);
-            }
-            catch (Exception ex)
-            {
+        //public string GenerateJWTToken(string Emailid)
+        //{
+        //    try
+        //    {
+        //        var loginTokenHandler = new JwtSecurityTokenHandler();
+        //        var loginTokenKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.Iconfiguration[("Jwt:key")]));
+        //        var loginTokenDescriptor = new SecurityTokenDescriptor
+        //        {
+        //            Subject = new ClaimsIdentity(new Claim[]
+        //            {
+        //                new Claim(ClaimTypes.Email, Emailid),
+        //            }),
+        //            Expires = DateTime.UtcNow.AddMinutes(50),
+        //            SigningCredentials = new SigningCredentials(loginTokenKey, SecurityAlgorithms.HmacSha256Signature)
+        //        };
+        //        var token = loginTokenHandler.CreateToken(loginTokenDescriptor);
+        //        return loginTokenHandler.WriteToken(token);
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                throw ex.InnerException;
-            }
+        //        throw ex.InnerException;
+        //    }
+        //}
+        public string GenerateJWTToken(string email)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(Iconfiguration["Jwt:key"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim("Email", email) }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
         public string ForgetPassword(string Emailid)
         {
@@ -103,7 +116,6 @@ namespace RepositaryLayer.Services
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -120,7 +132,7 @@ namespace RepositaryLayer.Services
                 }
                 return false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
