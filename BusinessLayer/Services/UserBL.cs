@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BusinessLayer.Interfaces;
-using CommonLayer.Model;
-using RepositaryLayer.Interfaces;
-
-namespace BusinessLayer.Services
+﻿namespace BusinessLayer.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using BusinessLayer.Interfaces;
+    using CommonLayer.Model;
+    using RepositaryLayer.Entities;
+    using RepositaryLayer.Interfaces;
     public class UserBL : IUserBL
     {
         IUserRL iuserrl;
@@ -23,7 +23,7 @@ namespace BusinessLayer.Services
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public bool Registration(UserRegistration user)
+        public UserEntity Registration(UserRegistration user)
         {
             try
             {

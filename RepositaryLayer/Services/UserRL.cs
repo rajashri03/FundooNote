@@ -1,18 +1,17 @@
-﻿using CommonLayer.Model;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using RepositaryLayer.AppContext;
-using RepositaryLayer.Entities;
-using RepositaryLayer.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-
-namespace RepositaryLayer.Services
+﻿namespace RepositaryLayer.Services
 {
+    using CommonLayer.Model;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.IdentityModel.Tokens;
+    using RepositaryLayer.AppContext;
+    using RepositaryLayer.Entities;
+    using RepositaryLayer.Interfaces;
+    using System;
+    using System.Collections.Generic;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Text;
     public class UserRL: IUserRL
     {
         private readonly Context context;
@@ -22,7 +21,7 @@ namespace RepositaryLayer.Services
             this.context = context;
             this.Iconfiguration = Iconfiguration;
         }
-        public bool Registration(UserRegistration user)
+        public UserEntity Registration(UserRegistration user)
         {
             try
             {
@@ -30,14 +29,51 @@ namespace RepositaryLayer.Services
                 users.FirstName = user.Firstname;
                 users.LastName = user.Lastname;
                 users.Email = user.Email;
-                users.Password = user.Password;
+                users.CreatedAt = user.Createat;
+                users.ModifiedAt = user.Modifiedat;
+                users.Password = EncryptPass(user.Password);
                 this.context.Users.Add(users);
                 int result = this.context.SaveChanges();
                 if (result > 0)
                 {
-                    return true;
+                    return users;
                 }
-                return false;
+                return null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public string EncryptPass(string password)
+        {
+            try
+            {
+                string msg = "";
+                byte[] encode = new byte[password.Length];
+                encode = Encoding.UTF8.GetBytes(password);
+                msg = Convert.ToBase64String(encode);
+                return msg;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public string Decrpt(string encodedData)
+        {
+            try
+            {
+                System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
+                System.Text.Decoder utf8Decode = encoder.GetDecoder();
+                byte[] todecode_byte = Convert.FromBase64String(encodedData);
+                int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
+                char[] decoded_char = new char[charCount];
+                utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
+                string result = new String(decoded_char);
+                return result;
             }
             catch (Exception)
             {
@@ -49,10 +85,13 @@ namespace RepositaryLayer.Services
         {
             try
             {
-                var result = this.context.Users.FirstOrDefault(x => x.Email == userLogin.Email && x.Password == userLogin.Password);
-                if (result != null)
+                UserEntity user = new UserEntity();
+                user = this.context.Users.FirstOrDefault(x => x.Email == userLogin.Email);
+                string dPass = Decrpt(user.Password);
+                var id = user.Id;
+                if (dPass == userLogin.Password && user != null)
                 {
-                    var token = this.GenerateJWTToken(userLogin.Email);
+                    var token = this.TokenBTID(id);
                     return token;
                 }
                 return null;
@@ -95,6 +134,19 @@ namespace RepositaryLayer.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("Email", email) }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+        public string TokenBTID(long userid)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(Iconfiguration["Jwt:key"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim("Id", userid.ToString()) }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

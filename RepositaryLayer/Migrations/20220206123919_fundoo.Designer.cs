@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RepositaryLayer.AppContext;
 
 namespace RepositaryLayer.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20220206123919_fundoo")]
+    partial class fundoo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,34 +49,6 @@ namespace RepositaryLayer.Migrations
                     b.ToTable("Collaborator");
                 });
 
-            modelBuilder.Entity("RepositaryLayer.Entities.LabelEntity", b =>
-                {
-                    b.Property<long>("LabelId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("LabelName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("Noteid")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("Userid")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("notesNoteID")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("LabelId");
-
-                    b.HasIndex("Userid");
-
-                    b.HasIndex("notesNoteID");
-
-                    b.ToTable("Labels");
-                });
-
             modelBuilder.Entity("RepositaryLayer.Entities.NoteEntity", b =>
                 {
                     b.Property<long>("NoteID")
@@ -84,9 +58,6 @@ namespace RepositaryLayer.Migrations
 
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Createat")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -99,9 +70,6 @@ namespace RepositaryLayer.Migrations
 
                     b.Property<bool>("IsTrash")
                         .HasColumnType("bit");
-
-                    b.Property<DateTime?>("Modifiedat")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
@@ -150,19 +118,6 @@ namespace RepositaryLayer.Migrations
                 });
 
             modelBuilder.Entity("RepositaryLayer.Entities.CollabEntity", b =>
-                {
-                    b.HasOne("RepositaryLayer.Entities.UserEntity", "user")
-                        .WithMany()
-                        .HasForeignKey("Userid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RepositaryLayer.Entities.NoteEntity", "notes")
-                        .WithMany()
-                        .HasForeignKey("notesNoteID");
-                });
-
-            modelBuilder.Entity("RepositaryLayer.Entities.LabelEntity", b =>
                 {
                     b.HasOne("RepositaryLayer.Entities.UserEntity", "user")
                         .WithMany()

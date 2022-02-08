@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CommonLayer.Model
+﻿namespace CommonLayer.Model
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
     public class UserLogin
     {
         public string Email { get; set; }

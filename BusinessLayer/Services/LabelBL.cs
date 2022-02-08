@@ -1,29 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BusinessLayer.Interfaces;
-using CommonLayer.Model;
-
-namespace BusinessLayer.Services
+﻿namespace BusinessLayer.Services
 {
-    public class LabelBL: ILabelBL
+    using BusinessLayer.Interfaces;
+    using RepositaryLayer.Entities;
+    using RepositaryLayer.Interfaces;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    public class LabelBL : ILabelBL
     {
-        ILabelBL labelRl;
-        public LabelBL(ILabelBL labelRl)
+        ILabelRL labelbl;
+        public LabelBL(ILabelRL labelbl)
         {
-            this.labelRl = labelRl;
+            this.labelbl = labelbl;
         }
-
-        public bool AddLabel(LabelModel label)
+        public LabelEntity Addlabel(long noteid, long userid, string labels)
         {
             try
             {
-                return this.labelRl.AddLabel(label);
+                return this.labelbl.Addlabel(noteid, userid, labels);
             }
             catch (Exception)
             {
+
                 throw;
             }
+        }
+        public IEnumerable<LabelEntity> GetlabelsByNoteid(long noteid, long userid)
+        {
+            try
+            {
+                return this.labelbl.GetlabelsByNoteid(noteid,userid);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public bool RemoveLabel(long userID, string labelName)
+        {
+            try
+            {
+                return this.labelbl.RemoveLabel(userID, labelName);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+        public IEnumerable<LabelEntity> RenameLabel(long userID, string oldLabelName, string labelName)
+        {
+            try
+            {
+                return this.labelbl.RenameLabel(userID, oldLabelName,labelName);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
     }
 }

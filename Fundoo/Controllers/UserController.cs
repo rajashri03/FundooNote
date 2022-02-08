@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using BusinessLayer.Interfaces;
-using CommonLayer.Model;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using RepositaryLayer.Entities;
-
-namespace Fundoo.Controllers
+﻿namespace Fundoo.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
+    using BusinessLayer.Interfaces;
+    using CommonLayer.Model;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using RepositaryLayer.Entities;
+
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -22,15 +22,16 @@ namespace Fundoo.Controllers
             this.userBL = userBL;
 
         }
-        [HttpPost]
+        [HttpPost("Add")]
         public IActionResult AddUser(UserRegistration userRegistration)
         {
             try
             {
-                if (userBL.Registration(userRegistration))
+                var reg = this.userBL.Registration(userRegistration);
+                if (reg!=null)
 
                 {
-                    return this.Ok(new { Success = true, message = "Registration Sucessfull" });
+                    return this.Ok(new { Success = true, message = "Registration Sucessfull" ,Response=reg});
                 }
                 else
                 {
@@ -43,7 +44,7 @@ namespace Fundoo.Controllers
             }
         }
         //[Authorize]
-        [HttpPost]
+        [HttpPost("Login")]
         public IActionResult Login(UserLogin login)
         {
             try
@@ -64,7 +65,7 @@ namespace Fundoo.Controllers
                 throw ex.InnerException;
             }
         }
-        [HttpPost]
+        [HttpPost("ForgetPassword")]
         public IActionResult ForgetPassword(string email)
         {
             try
@@ -85,7 +86,7 @@ namespace Fundoo.Controllers
             }
         }
         [Authorize]
-        [HttpPost]
+        [HttpPost("Reset")]
         public IActionResult ResetPassword(string password, string confirmPassword)
         {
             try

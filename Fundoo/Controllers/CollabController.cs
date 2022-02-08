@@ -1,35 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BusinessLayer.Interfaces;
-using CommonLayer.Model;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using RepositaryLayer.Entities;
-
-namespace Fundoo.Controllers
+﻿namespace Fundoo.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using BusinessLayer.Interfaces;
+    using CommonLayer.Model;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using RepositaryLayer.Entities;
+
+    [Authorize]
+    [Route("api/[controller]")]
     [ApiController]
     public class CollabController : ControllerBase
     {
         ICollabBL collab;
-
         public CollabController(ICollabBL collab)
         {
             this.collab = collab;
         }
-        //[Authorize]
-        [HttpPost]
-        public IActionResult AddCollab(long noteid, long userid, string email)
+        [HttpPost("Add")]
+        public IActionResult AddCollab(long noteid, string email)
         {
             try
             {
-                if (collab.AddCollab(noteid, userid, email))
+                long userid = Convert.ToInt32(User.Claims.First(e => e.Type == "Id").Value);
+                var result = collab.AddCollab(noteid, userid,email);
+                if (result != null)
                 {
-                    return this.Ok(new { Success = true, message = "Collaborator Added Successfully" });
+                    return this.Ok(new { Success = true, message = "Collaborator Added Successfully",Response=result });
                 }
                 else
                 {
@@ -41,7 +42,7 @@ namespace Fundoo.Controllers
                 return this.BadRequest(new { Success = false, message = ex.Message });
             }
         }
-        [HttpDelete]
+        [HttpDelete("Remove")]
         public IActionResult Remove(long collabid)
         {
             try
@@ -60,7 +61,7 @@ namespace Fundoo.Controllers
                 return this.BadRequest(new { Success = false, message = ex.Message });
             }
         }
-        [HttpGet]
+        [HttpGet("ByNoteId")]
         public IEnumerable<CollabEntity> GetAllByNoteID(long noteid)
         {
             try

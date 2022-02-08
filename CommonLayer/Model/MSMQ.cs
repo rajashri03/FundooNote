@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
-using Experimental.System.Messaging;
-
-namespace CommonLayer.Model
+﻿namespace CommonLayer.Model
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Mail;
+    using System.Text;
+    using Experimental.System.Messaging;
     public class MSMQ
     {
         MessageQueue msg = new MessageQueue();

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
-
-namespace RepositaryLayer.Entities
+﻿namespace RepositaryLayer.Entities
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Text;
     public class NoteEntity
     {
         [Key]
@@ -18,8 +17,10 @@ namespace RepositaryLayer.Entities
         public bool IsArchive { get; set; }
         public bool IsPin { get; set; }
         public bool IsTrash { get; set; }
+        public DateTime? Createat { get; set; }
+        public DateTime? Modifiedat { get; set; }
         [ForeignKey("Users")]
         public long userid { get; set; }
-        public virtual UserEntity user { get; set; }
+        public virtual UserEntity user { get; set; }//allow lazy loading,overide userentity class
     }
 }

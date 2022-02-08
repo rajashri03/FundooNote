@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CommonLayer.Model;
-using Microsoft.Extensions.Configuration;
-using RepositaryLayer.AppContext;
-using RepositaryLayer.Entities;
-using RepositaryLayer.Interfaces;
-
-namespace RepositaryLayer.Services
+﻿namespace RepositaryLayer.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using CommonLayer.Model;
+    using Microsoft.Extensions.Configuration;
+    using RepositaryLayer.AppContext;
+    using RepositaryLayer.Entities;
+    using RepositaryLayer.Interfaces;
     public class CollabRL : ICollabRL
     {
         private readonly Context context;
@@ -19,7 +18,7 @@ namespace RepositaryLayer.Services
             this.context = context;
             this.Iconfiguration = Iconfiguration;
         }
-        public bool AddCollab(long noteid, long userid, string email)
+        public CollabEntity AddCollab(long noteid, long userid, string email)
         {
             try
             {
@@ -31,9 +30,9 @@ namespace RepositaryLayer.Services
                 int result = this.context.SaveChanges();
                 if (result > 0)
                 {
-                    return true;
+                    return Entity;
                 }
-                return false;
+                return null;
 
             }
             catch (Exception)

@@ -1,21 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BusinessLayer.Interfaces;
-using RepositaryLayer.Entities;
-using RepositaryLayer.Interfaces;
-
-namespace BusinessLayer.Services
+﻿namespace BusinessLayer.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using BusinessLayer.Interfaces;
+    using RepositaryLayer.Entities;
+    using RepositaryLayer.Interfaces;
     public class CollabBL:ICollabBL
     {
-        ICollabRL collabRl;
+        ICollabRL collabRl;//decalring collabrl(repository layer) variable
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="collabRl"></param>
         public CollabBL(ICollabRL collabRl)
         {
             this.collabRl = collabRl;
         }
-
-        public bool AddCollab(long noteid, long userid, string email)
+        /// <summary>
+        /// Implementation of interface(ICollabBl)
+        /// </summary>
+        /// <param name="noteid"></param>
+        /// <param name="userid"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public CollabEntity AddCollab(long noteid, long userid, string email)
         {
             try
             {

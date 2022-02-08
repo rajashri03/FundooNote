@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CommonLayer.Model
+﻿namespace CommonLayer.Model
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
     public class NoteModel
     {
         public string Title { get; set; }
@@ -13,5 +12,7 @@ namespace CommonLayer.Model
         public bool IsArchive { get; set; }
         public bool IsPin { get; set; }
         public bool IsTrash { get; set; }
+        public DateTime? Createat { get; set; }
+        public DateTime? Modifiedat { get; set; }
     }
 }

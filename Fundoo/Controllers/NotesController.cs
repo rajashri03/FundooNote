@@ -1,36 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BusinessLayer.Interfaces;
-using CommonLayer.Model;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using RepositaryLayer.Entities;
-
-
-namespace Fundoo.Controllers
+﻿namespace Fundoo.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using BusinessLayer.Interfaces;
+    using CommonLayer.Model;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Caching.Distributed;
+    using Microsoft.Extensions.Caching.Memory;
+    using Newtonsoft.Json;
+    using RepositaryLayer.AppContext;
+    using RepositaryLayer.Entities;
+
+    [Route("api/[controller]")]
     [ApiController]
     public class NotesController : ControllerBase
     {
         INoteBL noteBL;
-        
-        public NotesController(INoteBL noteBL)
+        private readonly IMemoryCache memoryCache;
+        Context context;
+        private readonly IDistributedCache distributedCache;
+        public NotesController(INoteBL noteBL,IMemoryCache memoryCache,Context context,IDistributedCache distributedCache)
         {
             this.noteBL = noteBL;
-
+            this.memoryCache = memoryCache;
+            this.context = context;
+            this.distributedCache = distributedCache;
         }
-        [HttpPost]
-        public IActionResult AddNotes(NoteModel addnote,long userid)
+
+        [Authorize]
+        [HttpPost("Add")]
+        public IActionResult AddNotes(NoteModel addnote)
         {
             try
             {
-                if (noteBL.AddNote(addnote,userid))
+                long userid = Convert.ToInt32(User.Claims.First(e => e.Type == "Id").Value);
+                var result = noteBL.AddNote(addnote, userid);
+                if (result!=null)
                 {
-                    return this.Ok(new { Success = true, message = "Note Added Successfully" });
+                    return this.Ok(new { Success = true, message = "Note Added Successfully" ,Response= result});
                 }
                 else
                 {
@@ -42,7 +55,9 @@ namespace Fundoo.Controllers
                 return this.BadRequest(new { Success = false, message = ex.Message });
             }
         }
-        [HttpDelete]
+
+        [Authorize]
+        [HttpDelete("Remove")]
         public IActionResult DeleteNotes(long noteid)
         {
             try
@@ -61,14 +76,18 @@ namespace Fundoo.Controllers
                 return this.BadRequest(new { Success = false, message = ex.Message });
             }
         }
-        [HttpPut]
+
+        [Authorize]
+        [HttpPut("Update")]
         public IActionResult updateNotes(NoteModel addnote, long noteid)
         {
             try
             {
-                if (noteBL.UpdateNotes(addnote, noteid))
+                //long userid = Convert.ToInt32(User.Claims.First(e => e.Type == "Id").Value);
+                var result = noteBL.UpdateNotes(addnote, noteid);
+                if (result!=null)
                 {
-                    return this.Ok(new { Success = true, message = "Note Updated Successfully" });
+                    return this.Ok(new { Success = true, message = "Note Updated Successfully",Response=result });
                 }
                 else
                 {
@@ -81,14 +100,16 @@ namespace Fundoo.Controllers
             }
         }
 
-        [HttpPut]
+        [Authorize]
+        [HttpPut("Pin")]
         public IActionResult Ispinornot(long noteid)
         {
             try
             {
-                if (noteBL.IsPinORNot(noteid))
+                var result = noteBL.IsPinORNot(noteid);
+                if (result!=null)
                 {
-                    return this.Ok(new { message = "Note unPinned " });
+                    return this.Ok(new { message = "Note unPinned " ,Response=result});
                 }
                 else
                 {
@@ -101,14 +122,17 @@ namespace Fundoo.Controllers
                 throw;
             }
         }
-        [HttpPut]
+
+        [Authorize]
+        [HttpPut("Trash")]
         public IActionResult Istrashornot(long noteid)
         {
             try
             {
-                if (noteBL.IsPinORNot(noteid))
+                var result = noteBL.IstrashORNot(noteid);
+                if (result!=null)
                 {
-                    return this.Ok(new { message = "Note Restored " });
+                    return this.Ok(new { message = "Note Restored " ,Response=result});
                 }
                 else
                 {
@@ -121,14 +145,17 @@ namespace Fundoo.Controllers
                 throw;
             }
         }
-        [HttpPut]
+
+        [Authorize]
+        [HttpPut("Archive")]
         public IActionResult IsArchiveORNot(long noteid)
         {
             try
             {
-                if (noteBL.IsPinORNot(noteid))
+                var result = noteBL.IsArchiveORNot(noteid);
+                if (result!=null)
                 {
-                    return this.Ok(new {message = "Note Unarchived " });
+                    return this.Ok(new {message = "Note Unarchived ",Response=result });
                 }
                 else
                 {
@@ -141,14 +168,17 @@ namespace Fundoo.Controllers
                 throw;
             }
         }
-        [HttpPut]
+
+        [Authorize]
+        [HttpPut("Upload")]
         public IActionResult UploadImage(long noteid,IFormFile img)
         {
             try
             {
-                if (noteBL.UploadImage(noteid, img))
+                var result = noteBL.UploadImage(noteid,img);
+                if (result!=null)
                 {
-                    return this.Ok(new { message = "uploaded " });
+                    return this.Ok(new { message = "uploaded " ,Response=result});
                 }
                 else
                 {
@@ -161,14 +191,17 @@ namespace Fundoo.Controllers
                 throw;
             }
         }
-        [HttpPut]
+
+        [Authorize]
+        [HttpPut("Color")]
         public IActionResult Color(long noteid, string color)
         {
             try
             {
-                if (noteBL.Color(noteid, color))
+                var result = noteBL.Color(noteid,color);
+                if (result!=null)
                 {
-                    return this.Ok(new { message = "Color is changed " });
+                    return this.Ok(new { message = "Color is changed ",Response=result });
                 }
                 else
                 {
@@ -181,7 +214,9 @@ namespace Fundoo.Controllers
                 throw;
             }
         }
-        [HttpGet]
+
+        [Authorize]
+        [HttpGet("ByUser")]
         public IEnumerable<NoteEntity> GetAllNotesbyuser(long userid)
         {
             try
@@ -193,7 +228,9 @@ namespace Fundoo.Controllers
                 throw;
             }
         }
-        [HttpGet]
+
+        [Authorize]
+        [HttpGet("AllNotes")]
         public IEnumerable<NoteEntity> GetAllNote()
         {
             try
@@ -205,7 +242,30 @@ namespace Fundoo.Controllers
                 throw;
             }
         }
-        
+        [HttpGet("RedisCache")]
+        public async Task<IActionResult> GetAllNotesUsingRedisCache()
+        {
+            var cacheKey = "NodeList";
+            string serializedNotesList;
+            var NotesList = new List<NoteEntity>();
+            var redisNotesList = await distributedCache.GetAsync(cacheKey);
+            if (redisNotesList != null)
+            {
+                serializedNotesList = Encoding.UTF8.GetString(redisNotesList);
+                NotesList = JsonConvert.DeserializeObject<List<NoteEntity>>(serializedNotesList);
+            }
+            else
+            {
+                NotesList = await context.Notes.ToListAsync();
+                serializedNotesList = JsonConvert.SerializeObject(NotesList);
+                redisNotesList = Encoding.UTF8.GetBytes(serializedNotesList);
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                await distributedCache.SetAsync(cacheKey, redisNotesList, options);
+            }
+            return Ok(NotesList);
+        }
 
     }
 }

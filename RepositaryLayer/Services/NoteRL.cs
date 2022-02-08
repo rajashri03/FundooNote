@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using CommonLayer;
-using CommonLayer.Model;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting.Internal;
-using RepositaryLayer.AppContext;
-using RepositaryLayer.Entities;
-using RepositaryLayer.Interfaces;
-using System.Web;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-
-namespace RepositaryLayer.Services
+﻿namespace RepositaryLayer.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using CommonLayer;
+    using CommonLayer.Model;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Hosting.Internal;
+    using RepositaryLayer.AppContext;
+    using RepositaryLayer.Entities;
+    using RepositaryLayer.Interfaces;
+    using System.Web;
+    using CloudinaryDotNet;
+    using CloudinaryDotNet.Actions;
     public class NoteRL:INoteRL
     {
         private readonly Context context;
@@ -32,7 +31,7 @@ namespace RepositaryLayer.Services
             this.context = context;
             this.Iconfiguration = Iconfiguration;
         }
-        public bool AddNote(NoteModel notes,long userid)
+        public NoteEntity AddNote(NoteModel notes,long userid)
         {
             try
             {
@@ -45,13 +44,15 @@ namespace RepositaryLayer.Services
                 noteEntity.IsPin = notes.IsPin;
                 noteEntity.IsTrash = notes.IsTrash;
                 noteEntity.userid = userid;
+                noteEntity.Createat = notes.Createat;
+                noteEntity.Modifiedat = notes.Modifiedat;
                 this.context.Notes.Add(noteEntity);
                 int result = this.context.SaveChanges();
                 if (result > 0)
                 {
-                    return true;
+                    return noteEntity;
                 }
-                return false;
+                return null;
 
             }
             catch (Exception)
@@ -78,11 +79,11 @@ namespace RepositaryLayer.Services
                 throw;
             }
         }
-        public bool UpdateNotes(NoteModel notes,long noteid)
+        public NoteEntity UpdateNotes(NoteModel notes,long noteid)
         {
             try
             {
-                var result = context.Notes.Where(e => e.NoteID == noteid).FirstOrDefault();
+                NoteEntity result = context.Notes.Where(e => e.NoteID == noteid).FirstOrDefault();
                 if (result != null)
                 {
                     //NoteEntity noteEntity = new NoteEntity();
@@ -95,9 +96,9 @@ namespace RepositaryLayer.Services
                     result.IsTrash = notes.IsTrash;
                     context.Notes.Update(result);
                     context.SaveChanges();
-                    return true;
+                    return result;
                 }
-                return false;
+                return null;
             }
             catch (Exception)
             {
@@ -112,20 +113,20 @@ namespace RepositaryLayer.Services
         {
             return context.Notes.Where(n => n.userid == userid).ToList();
         }
-        public bool IsPinORNot(long noteid)
+        public NoteEntity IsPinORNot(long noteid)
         {
             try
             {
-                var result = this.context.Notes.FirstOrDefault(x => x.NoteID == noteid);
+                NoteEntity result = this.context.Notes.FirstOrDefault(x => x.NoteID == noteid);
                 if(result.IsPin==true)
                 {
                     result.IsPin = false;
                     this.context.SaveChanges();
-                    return true;
+                    return result;
                 }
                 result.IsPin = true;
                 this.context.SaveChanges();
-                return false;
+                return null;
             }
             catch (Exception)
             {
@@ -133,20 +134,20 @@ namespace RepositaryLayer.Services
                 throw;
             }
         }
-        public bool IsArchiveORNot(long noteid)
+        public NoteEntity IsArchiveORNot(long noteid)
         {
             try
             {
-                var result = this.context.Notes.FirstOrDefault(x => x.NoteID == noteid);
+                NoteEntity result = this.context.Notes.FirstOrDefault(x => x.NoteID == noteid);
                 if (result.IsArchive == true)
                 {
                     result.IsArchive = false;
                     this.context.SaveChanges();
-                    return true;
+                    return result;
                 }
                 result.IsArchive = true;
                 this.context.SaveChanges();
-                return false;
+                return null;
             }
             catch (Exception)
             {
@@ -154,20 +155,20 @@ namespace RepositaryLayer.Services
                 throw;
             }
         }
-        public bool IstrashORNot(long noteid)
+        public NoteEntity IstrashORNot(long noteid)
         {
             try
             {
-                var result = this.context.Notes.FirstOrDefault(x => x.NoteID == noteid);
+                NoteEntity result = this.context.Notes.FirstOrDefault(x => x.NoteID == noteid);
                 if (result.IsTrash == true)
                 {
                     result.IsTrash = false;
                     this.context.SaveChanges();
-                    return true;
+                    return result;
                 }
                 result.IsTrash = true;
                 this.context.SaveChanges();
-                return false;
+                return null;
             }
             catch (Exception)
             {
@@ -175,7 +176,7 @@ namespace RepositaryLayer.Services
                 throw;
             }
         }
-        public bool UploadImage(long noteid, IFormFile img)
+        public NoteEntity UploadImage(long noteid, IFormFile img)
         {
             try
             {
@@ -195,10 +196,10 @@ namespace RepositaryLayer.Services
                     int upload = context.SaveChanges();
                     if (upload > 0)
                     {
-                        return true;
+                        return noteId;
                     }
                 }
-                return false;
+                return null;
                 
             }
             catch (Exception)
@@ -207,7 +208,7 @@ namespace RepositaryLayer.Services
                 throw;
             }
         }
-        public bool Color(long noteid,string color)
+        public NoteEntity Color(long noteid,string color)
         {
             try
             {
@@ -216,9 +217,9 @@ namespace RepositaryLayer.Services
                 {
                     note.Color = color;
                     this.context.SaveChanges();
-                    return true;
+                    return note;
                 }
-                return false;
+                return null;
             }
             catch (Exception)
             {

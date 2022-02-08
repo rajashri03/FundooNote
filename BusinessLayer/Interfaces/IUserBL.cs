@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CommonLayer.Model;
-
-namespace BusinessLayer.Interfaces
+﻿namespace BusinessLayer.Interfaces
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Text;
+	using CommonLayer.Model;
+	using RepositaryLayer.Entities;
+
 	/// <summary>
 	/// Interface for Fundoo users-only Method calling should be here.
 	/// </summary>
 	public interface IUserBL
 	{
-		public bool Registration(UserRegistration user);
+		public UserEntity Registration(UserRegistration user);
 		public string Login(UserLogin userlogin);
 		public string GenerateJWTToken(string Emailid);
 		public string ForgetPassword(string Emailid);

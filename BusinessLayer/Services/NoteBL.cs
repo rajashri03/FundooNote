@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BusinessLayer.Interfaces;
-using CommonLayer.Model;
-using Microsoft.AspNetCore.Http;
-using RepositaryLayer.Entities;
-using RepositaryLayer.Interfaces;
-
-namespace BusinessLayer.Services
+﻿namespace BusinessLayer.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using BusinessLayer.Interfaces;
+    using CommonLayer.Model;
+    using Microsoft.AspNetCore.Http;
+    using RepositaryLayer.Entities;
+    using RepositaryLayer.Interfaces;
     public class NoteBL:INoteBL
     {
         INoteRL noterl;
@@ -16,7 +15,13 @@ namespace BusinessLayer.Services
         {
             this.noterl = noterl;
         }
-        public bool AddNote(NoteModel noteModel,long userid)
+        /// <summary>
+        /// Method to add notes
+        /// </summary>
+        /// <param name="noteModel"></param>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public NoteEntity AddNote(NoteModel noteModel,long userid)
         {
             try
             {
@@ -28,6 +33,11 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
+        /// <summary>
+        /// Method to delete notes
+        /// </summary>
+        /// <param name="noteid"></param>
+        /// <returns></returns>
         public bool DeleteNote(long noteid)
         {
             try
@@ -40,7 +50,13 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-        public bool UpdateNotes(NoteModel noteModel, long noteid)
+        /// <summary>
+        /// Method to update notes
+        /// </summary>
+        /// <param name="noteModel"></param>
+        /// <param name="noteid"></param>
+        /// <returns></returns>
+        public NoteEntity UpdateNotes(NoteModel noteModel, long noteid)
         {
             try
             {
@@ -52,6 +68,10 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
+        /// <summary>
+        /// Method to get all notes
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<NoteEntity> GetAllNotes()
         {
             try
@@ -76,7 +96,7 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-        public bool IsPinORNot(long noteid)
+        public NoteEntity IsPinORNot(long noteid)
         {
             try
             {
@@ -88,7 +108,7 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-        public bool IsArchiveORNot(long noteid)
+        public NoteEntity IsArchiveORNot(long noteid)
         {
             try
             {
@@ -100,7 +120,7 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-        public bool IstrashORNot(long noteid)
+        public NoteEntity IstrashORNot(long noteid)
         {
             try
             {
@@ -112,7 +132,7 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-        public bool UploadImage(long noteid,IFormFile img)
+        public NoteEntity UploadImage(long noteid,IFormFile img)
         {
             try
             {
@@ -124,7 +144,7 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-        public bool Color(long noteid, string color)
+        public NoteEntity Color(long noteid, string color)
         {
             try
             {
