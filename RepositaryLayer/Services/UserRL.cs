@@ -16,11 +16,21 @@
     {
         private readonly Context context;
         private readonly IConfiguration Iconfiguration;
+        /// <summary>
+        /// constructor to pass context and configuration 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="Iconfiguration"></param>
         public UserRL(Context context, IConfiguration Iconfiguration)
         {
             this.context = context;
             this.Iconfiguration = Iconfiguration;
         }
+        /// <summary>
+        /// Registration method to register new user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public UserEntity Registration(UserRegistration user)
         {
             try
@@ -66,8 +76,8 @@
         {
             try
             {
-                System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
-                System.Text.Decoder utf8Decode = encoder.GetDecoder();
+                UTF8Encoding encoder = new UTF8Encoding();
+                Decoder utf8Decode = encoder.GetDecoder();
                 byte[] todecode_byte = Convert.FromBase64String(encodedData);
                 int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
                 char[] decoded_char = new char[charCount];
@@ -81,6 +91,11 @@
                 throw;
             }
         }
+        /// <summary>
+        /// Login method to log in with user email and password
+        /// </summary>
+        /// <param name="userLogin"></param>
+        /// <returns></returns>
         public string Login(UserLogin userLogin)
         {
             try
@@ -127,6 +142,11 @@
         //        throw ex.InnerException;
         //    }
         //}
+        /// <summary>
+        /// Generate JWT token by email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public string GenerateJWTToken(string email)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -140,6 +160,11 @@
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+        /// <summary>
+        /// Generate token by User id
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
         public string TokenBTID(long userid)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -153,6 +178,11 @@
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+        /// <summary>
+        /// Method for forget password -sending token to mail using msmq
+        /// </summary>
+        /// <param name="Emailid"></param>
+        /// <returns></returns>
         public string ForgetPassword(string Emailid)
         {
             try
@@ -171,6 +201,13 @@
                 throw;
             }
         }
+        /// <summary>
+        /// Reseting password after authroization of token 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <param name="confirmpassword"></param>
+        /// <returns></returns>
         public bool ResetPassword(string email, string password, string confirmpassword)
         {
             try

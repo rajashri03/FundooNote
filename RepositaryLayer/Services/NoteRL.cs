@@ -31,6 +31,12 @@
             this.context = context;
             this.Iconfiguration = Iconfiguration;
         }
+        /// <summary>
+        /// Method to add notes
+        /// </summary>
+        /// <param name="notes"></param>
+        /// <param name="userid"></param>
+        /// <returns></returns>
         public NoteEntity AddNote(NoteModel notes,long userid)
         {
             try
@@ -61,6 +67,11 @@
                 throw;
             }
         }
+        /// <summary>
+        /// method to delete notes
+        /// </summary>
+        /// <param name="noteid"></param>
+        /// <returns></returns>
         public bool DeleteNote(long noteid)
         {
             try
@@ -79,6 +90,12 @@
                 throw;
             }
         }
+        /// <summary>
+        /// method to update notes
+        /// </summary>
+        /// <param name="notes"></param>
+        /// <param name="noteid"></param>
+        /// <returns></returns>
         public NoteEntity UpdateNotes(NoteModel notes,long noteid)
         {
             try
